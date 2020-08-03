@@ -17,7 +17,7 @@ timestamps = []
 
 def run_observer(webcam):
     fps = int(webcam.get(cv2.CAP_PROP_FPS))
-    while cv2.getWindowProperty(WINDOW_TITLE, 0) == 0:
+    while True:
         ret, img_frame = webcam.read()
         frame_gray = cv2.cvtColor(img_frame, cv2.COLOR_BGR2GRAY)
 
@@ -27,18 +27,22 @@ def run_observer(webcam):
             # utils.draw_face_roi(face_box, img_frame)
             face = utils.crop_to_boundingbox(face_box, img_frame)
             if face.shape[0] > 0 and face.shape[1] > 0:
-                get_chrom_map(face)
+                img_map = get_chrom_map(face)
+                if img_map is not None:
+                    cv2.imshow('map', img_map)
+                    break
 
         cv2.imshow('Camera', img_frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
+    cv2.waitKey(0)
 
 def get_chrom_map(face_roi):
     # 分成32个区域
     height = face_roi.shape[0]
     sub_area_height = int(height/32)
+    global timestamps
     timestamps += [time.time()]
     # utils.draw_face_roi(face_box, img_frame)
     t = np.arange(timestamps[0], timestamps[-1], 1 / fs)
@@ -72,9 +76,10 @@ def get_chrom_map(face_roi):
             chrom_value = get_chrom_value(cur_mean_colors, part_size)
             chrom_values.append(chrom_value)
         # 归一化
-        img_values = utils.normalize(chrom_value)
+        img_values = utils.normalize(chrom_values)
+        img_values = chrom_values.astype(np.uint8)
         return img_values
-
+    return None
 
 # Clean up
 def shut_down(webcam):
