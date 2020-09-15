@@ -45,7 +45,7 @@ def extract_image_includes_face_from_video(path, save_dir=''):
             cv2.imwrite(file_path, img_frame)
             save_index += 1
             # 如果设置了单个视频最大保存限制
-            if PIC_LENGTH_ONE_VIDEO_MAX_LIMIT and PIC_LENGTH_ONE_VIDEO_MAX_LIMIT >= save_index:
+            if PIC_LENGTH_ONE_VIDEO_MAX_LIMIT and save_index >= PIC_LENGTH_ONE_VIDEO_MAX_LIMIT:
                 # 下一个视频
                 break
         i += 1
