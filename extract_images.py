@@ -57,6 +57,8 @@ if __name__ == '__main__':
     file_info = os.walk(video_directory)
     for p, d, file_list in file_info:
         for i, file in enumerate(file_list):
+            print('****  ' + str(i) + '  *****')
             _d = (video_directory + '/' + d[0]) if d else video_directory
             _path = os.path.join(_d, file)
             extract_image_includes_face_from_video(_path, save_directory)
+    print('end........')
